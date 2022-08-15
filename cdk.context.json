@@ -1,0 +1,16 @@
+{
+  "devAccountID": "294914763164",
+  "prodAccountID": "294914763164",
+  "createDevBucket": true,
+  "codecommit": {
+    "repositoryName": "test-repository",
+    "codeBranch": "master"
+  },
+  "codepipeline": {
+    "pipelineName": "test-pipeline",
+    "restartExecutionOnUpdate": true
+  },
+  "stages": {
+    "pipelineName": "test-stage"
+  }
+}

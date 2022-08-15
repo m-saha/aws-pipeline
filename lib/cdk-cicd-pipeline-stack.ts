@@ -10,7 +10,7 @@ export class CdkCicdPipelineStack extends Stack {
     super(scope, id, props);
 
     const iamConstruct = new IAMRolesConstruct(this, "IAMRolesConstruct");
-    const ccConstruct = new CodeCommitConstruct(this, "CodeCommitConstruct");
+   const ccConstruct = new CodeCommitConstruct(this, "CodeCommitConstruct");
     const s3Construct = new S3DevBucketConstruct(this, "S3DevBucketConstruct");
 
     const cpConstruct = new CodePipelineConstruct(

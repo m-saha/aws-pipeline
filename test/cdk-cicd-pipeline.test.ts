@@ -15,3 +15,7 @@ test('SQS Queue Created', () => {
 //     VisibilityTimeout: 300
 //   });
 });
+
+beforeEach(() => {
+    jest.resetModules();
+  });

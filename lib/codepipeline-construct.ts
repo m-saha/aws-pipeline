@@ -10,7 +10,7 @@ import {
 import { IRole } from "aws-cdk-lib/aws-iam";
 import { IBucket } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
-//import { PipelineAppStage } from './stage';
+import { PipelineAppStage } from './stage';
 import { SecretValue } from "aws-cdk-lib";
 
 interface CodePipelineConstructProps {
@@ -89,12 +89,14 @@ export class CodePipelineConstruct extends Construct {
       actions: [
         new CloudFormationCreateUpdateStackAction({
           actionName: "Pipeline_Update",
-          stackName: "PipelineStack",
+          stackName: "CdkCicdPipelineStack",
           templatePath: cdkBuildOutput.atPath("CdkCicdPipelineStack.template.json"),
           adminPermissions: true, // roles to add for strict permission
         }),
       ],
     });
+  
+   
 
 
       

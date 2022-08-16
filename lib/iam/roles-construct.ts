@@ -11,6 +11,7 @@ import codePipelineServiceRolePolicy from "./policies/codepipeline-service-role-
 import codeBuildServiceRolePolicy from "./policies/codebuild-service-role-policy.json";
 import { Key } from "aws-cdk-lib/aws-kms";
 import { IBucket } from "aws-cdk-lib/aws-s3";
+import fs = require('fs');
 
 
 interface IAMRolesConstructProps {
@@ -38,13 +39,15 @@ export class IAMRolesConstruct extends Construct {
         enableKeyRotation: true,
       }).keyArn;
 
+    
+
     this.codePipelineServiceRole = new Role(this, "CodePipelineServiceRole", {
       assumedBy: new ServicePrincipal("codepipeline.amazonaws.com"),
       inlinePolicies: {
-        policy: PolicyDocument.fromJson(codePipelineServiceRolePolicy),
+        policy: PolicyDocument.fromJson(JSON.parse(fs.readFileSync("lib/iam/policies/codepipeline-service-role-policy.json", 'utf-8'))),
       },
     });
-
+    /*
     this.codePipelineTriggerCloudWatchRole = new Role(
       this,
       "CodePipelineTriggerCloudWatchRole",
@@ -62,7 +65,8 @@ export class IAMRolesConstruct extends Construct {
         },
       }
     );
-
+    */
+  /*
     this.codePipelineCrossAccountRole = new Role(
       this,
       "CodePipelineCrossAccountRole",
@@ -99,11 +103,11 @@ export class IAMRolesConstruct extends Construct {
         },
       }
     );
-
+*/
     this.codeBuildServiceRole = new Role(this, "CodeBuildServiceRole", {
       assumedBy: new ServicePrincipal("codebuild.amazonaws.com"),
       inlinePolicies: {
-        policy: PolicyDocument.fromJson(codeBuildServiceRolePolicy),
+        policy: PolicyDocument.fromJson(JSON.parse(fs.readFileSync("lib/iam/policies/codebuild-service-role-policy.json", 'utf-8'))),
       },
     });
 
@@ -115,8 +119,9 @@ export class IAMRolesConstruct extends Construct {
         ),
       ],
     });
+    
 
-    this.ec2InstanceServiceRole = new Role(this, "Ec2InstanceServiceRole", {
+   /*this.ec2InstanceServiceRole = new Role(this, "Ec2InstanceServiceRole", {
       assumedBy: new ServicePrincipal("ec2.amazonaws.com"),
       inlinePolicies: {
         policy: new PolicyDocument({
@@ -143,6 +148,6 @@ export class IAMRolesConstruct extends Construct {
           ],
         }),
       },
-    });
+    });*/
   }
 }

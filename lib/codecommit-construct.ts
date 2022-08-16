@@ -66,7 +66,7 @@ export class CodeCommitConstruct extends Construct {
               codeCommitContext.codeBranch
             ),
       });
-    } else {
+    } /*else {
       this.repo = new Repository(this, "CodeCommitSourceRepository", {
         repositoryName: codeCommitContext.repositoryName,
         description: repositoryDescription,
@@ -75,6 +75,6 @@ export class CodeCommitConstruct extends Construct {
           codeCommitContext.codeBranch
         ),
       });
-    }
+    }*/
   }
 }

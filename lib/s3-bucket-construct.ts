@@ -22,16 +22,18 @@ export class S3DevBucketConstruct extends Construct {
     const devAccountID: string = this.node.tryGetContext("devAccountID");
     const prodAccountID: string = this.node.tryGetContext("prodAccountID");
     const s3DevBucketARN: string = this.node.tryGetContext("s3DevBucketARN");
-    const createDevBucket: string =
+    const createDevBucket: boolean =
       this.node.tryGetContext("createDevBucket") || false;
 
     if (!s3DevBucketARN && createDevBucket) {
+
       this.bucket = new Bucket(this, "S3DevBucket", {
         blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
         removalPolicy: RemovalPolicy.RETAIN,
       });
 
       [
+        
         new PolicyStatement({
           effect: Effect.DENY,
           sid: "DenyUnEncryptedObjectUploads",
@@ -56,6 +58,7 @@ export class S3DevBucketConstruct extends Construct {
             },
           },
         }),
+        
         new PolicyStatement({
           sid: "AllowCrossAccountRWAccessForCodeDeployService",
           principals: [new AccountPrincipal(prodAccountID)],

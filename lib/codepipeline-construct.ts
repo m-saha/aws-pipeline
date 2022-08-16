@@ -3,6 +3,7 @@ import { IRepository } from "aws-cdk-lib/aws-codecommit";
 import { Artifact, Pipeline  } from "aws-cdk-lib/aws-codepipeline";
 import { CodePipeline,CodePipelineSource, ShellStep,ManualApprovalStep } from 'aws-cdk-lib/pipelines';
 import {
+  CloudFormationCreateUpdateStackAction,
   CodeBuildAction,
   GitHubSourceAction,
 } from "aws-cdk-lib/aws-codepipeline-actions";
@@ -26,12 +27,12 @@ export class CodePipelineConstruct extends Construct {
 
     const codePipelineContext = this.node.tryGetContext("codepipeline");
     
-
+/*
     const sourceArtifact = new Artifact(
       `${props.sourceRepository.repositoryName}-${new Date()}`
     );
 
-    /*this.pipeline = new CodePipeline(this, "CodePipeline", {
+    this.pipeline = new CodePipeline(this, "CodePipeline", {
       pipelineName: codePipelineContext.pipelineName,
       crossAccountKeys:false,
     });
@@ -39,10 +40,10 @@ export class CodePipelineConstruct extends Construct {
       /*restartExecutionOnUpdate: codePipelineContext.restartExecutionOnUpdate,
       role: props.pipelineServiceRole,
       artifactBucket: props.artifactBucket, 
-      */
+*/
       
-      const pipeline = new Pipeline(this, "Pipeline", {
-        pipelineName: "Pipeline",
+      const pipeline = new Pipeline(this, "CodePipeline", {
+        pipelineName: codePipelineContext.pipelineName,
         crossAccountKeys: false,
       });
 
@@ -54,7 +55,7 @@ export class CodePipelineConstruct extends Construct {
         new GitHubSourceAction({
           owner: "m-saha",
           repo: "aws-pipeline",
-          branch: "master",
+          branch: "main",
           actionName: "Pipeline_Source",
           oauthToken: SecretValue.secretsManager("github-token"),
           output: sourceOutput,
@@ -76,38 +77,27 @@ export class CodePipelineConstruct extends Construct {
               buildImage: LinuxBuildImage.STANDARD_5_0,
             },
             buildSpec: BuildSpec.fromSourceFilename(
-              "build-specs/cdk-build-spec.yml"
+              "build spec/cdk-build-spec.yml"
             ),
           }),
         }),
       ],
     });
 
-
-      /*  {
-          stageName: "Build",
-          actions: [
-            new CodeBuildAction({
-              actionName: "create-typedoc",
-              input: sourceArtifact,
-              project: new Project(this, "Documentation Build project", {
-                projectName: "synth-build-project",
-                role: props.codeBuildServiceRole,
-                artifacts: Artifacts.s3({
-                  bucket: props.artifactBucket,
-                  packageZip: true,
-                  path: "/builds/zipFiles/",
-                }),
-                source: Source.codeCommit({
-                  repository: props.sourceRepository,
-                  branchOrRef: "master",
-                }),
-              }),
-            }),
-          ],
-        },
+    pipeline.addStage({
+      stageName: "Update_Pipeline",
+      actions: [
+        new CloudFormationCreateUpdateStackAction({
+          actionName: "Pipeline_Update",
+          stackName: "PipelineStack",
+          templatePath: cdkBuildOutput.atPath("CdkCicdPipelineStack.template.json"),
+          adminPermissions: true, // roles to add for strict permission
+        }),
       ],
     });
+
+
+      
 
     /*const preProd = new PipelineStages(this, 'PreProd');
     const prod = new PipelineStages(this, 'Prod');

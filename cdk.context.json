@@ -1,13 +1,14 @@
 {
   "devAccountID": "294914763164",
   "prodAccountID": "294914763164",
-  "createDevBucket": true,
+  "s3DevBucketARN" : "arn:aws:s3:::s3dev-bucket-cicdpoc",
+  "createDevBucket": false,
   "codecommit": {
     "repositoryName": "test-repository",
     "codeBranch": "master"
   },
   "codepipeline": {
-    "pipelineName": "test-pipeline",
+    "pipelineName": "cicd-pipeline",
     "restartExecutionOnUpdate": true
   },
   "stages": {
